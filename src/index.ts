@@ -41,4 +41,4 @@ export const createEventBus = () => {
   return { emit, subscribe, unsubscribe, eventMap };
 };
 
-export const { emit, subscribe, eventMap } = createEventBus();
+export const { emit, subscribe, unsubscribe, eventMap } = createEventBus();
