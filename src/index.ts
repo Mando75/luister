@@ -4,8 +4,11 @@ export type Subscribe = <T>(
   event: string | Symbol,
   consumer: Consumer<T>
 ) => Unsubscriber;
-export type Unsubscribe = <T>(event: string | Symbol, consumer: Consumer<T>) => boolean;
-export type Unsubscriber = () => ReturnType<Unsubscribe>
+export type Unsubscribe = <T>(
+  event: string | Symbol,
+  consumer: Consumer<T>
+) => boolean;
+export type Unsubscriber = () => ReturnType<Unsubscribe>;
 export type Emitter = <T>(event: string | Symbol, payload?: T) => void;
 
 /**
@@ -35,7 +38,7 @@ export default function Luister() {
   const subscribe: Subscribe = (event, consumer) => {
     const subscribers = eventMap.get(event) ?? [];
     eventMap.set(event, [...subscribers, consumer]);
-    return () => unsubscribe(event, consumer)
+    return () => unsubscribe(event, consumer);
   };
 
   /**
@@ -50,16 +53,16 @@ export default function Luister() {
    * @return boolean
    */
   const unsubscribe: Unsubscribe = (event, consumer) => {
-    const subscribers = eventMap.get(event) ?? []
-    const index = subscribers.indexOf(consumer)
+    const subscribers = eventMap.get(event) ?? [];
+    const index = subscribers.indexOf(consumer);
     if (index >= 0) {
-      subscribers.splice(index, 1)
-      eventMap.set(event, subscribers)
-      return true
+      subscribers.splice(index, 1);
+      eventMap.set(event, subscribers);
+      return true;
     } else {
-      return false
+      return false;
     }
-  }
+  };
 
   /**
    * Emit a new event with an optional payload.
@@ -77,6 +80,6 @@ export default function Luister() {
   };
 
   return { emit, subscribe, unsubscribe, eventMap };
-};
+}
 
 export const { emit, subscribe, unsubscribe, eventMap } = Luister();
