@@ -8,6 +8,7 @@
   "repository": "https://github.com/Mando75/luister",
   "scripts": {
     "build": "microbundle",
+    "publish:docs": "yarn typedoc",
     "test": "yarn jest",
     "test:coverage": "yarn jest --coverage"
   },
@@ -22,6 +23,7 @@
     "microbundle": "^0.13.0",
     "prettier": "^2.2.1",
     "ts-jest": "^26.5.1",
+    "typedoc": "^0.20.26",
     "typescript": "^4.1.5"
   }
 }
