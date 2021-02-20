@@ -1,57 +1,60 @@
+/**
+ * Tracks event -> consumer mappings.
+ *
+ * Only exported for advanced use cases
+ */
 export type EventMap = Map<string | Symbol, Array<Consumer<any>>>;
-export type Consumer<T> = <T>(payload: T) => void;
+
+/**
+ * Subscribe to a new event.
+ *
+ * Consumer will be invoked _synchronously_ when event is emitted.
+ *
+ * Returns a function that can be used to unsubscribe the created consumer
+ * from the event.
+ */
 export type Subscribe = <T>(
   event: string | Symbol,
   consumer: Consumer<T>
 ) => Unsubscriber;
+export type Consumer<T> = <T>(payload: T) => void;
+
+/**
+ * Unsubscribe a consumer from an event.
+ *
+ * Returns true if consumer for given event was found and removed.
+ *
+ * Returns false if consumer was not found for given event.
+ */
 export type Unsubscribe = <T>(
   event: string | Symbol,
   consumer: Consumer<T>
 ) => boolean;
 export type Unsubscriber = () => ReturnType<Unsubscribe>;
-export type Emitter = <T>(event: string | Symbol, payload?: T) => void;
+
+/**
+ * Emit a new event with an optional payload.
+ *
+ * Calling emit will invoke all consumers _synchronously_ in the
+ * order they were subscribed.
+ */
+export type Emit = <T>(event: string | Symbol, payload?: T) => void;
 
 /**
  * Create a new event bus. Will return a new
  * eventMap and it's associated emit/subscribe functions
  *
- * Useful if you wish to isolate groups events from each other
+ * Useful if you wish to isolate groups of events from each other
  */
 export function Luister() {
-  /**
-   * Tracks the registered events and their subscribers.
-   */
   const eventMap: EventMap = new Map();
 
-  /**
-   * Subscribe to a new event.
-   *
-   * Consumer will be invoked _synchronously_ when event is emitted.
-   *
-   * Returns a function that can be used to unsubscribe the created consumer
-   * from the event.
-   *
-   * @param {string | Symbol} event
-   * @param {Consumer} consumer
-   * @return Unsubscriber
-   */
   const subscribe: Subscribe = (event, consumer) => {
     const subscribers = eventMap.get(event) ?? [];
     eventMap.set(event, [...subscribers, consumer]);
     return () => unsubscribe(event, consumer);
   };
 
-  /**
-   * Unsubscribe a consumer from an event.
-   *
-   * Returns true if consumer for given event was found and removed.
-   *
-   * Returns false if consumer was not found for given event.
-   *
-   * @param event
-   * @param consumer
-   * @return boolean
-   */
   const unsubscribe: Unsubscribe = (event, consumer) => {
     const subscribers = eventMap.get(event) ?? [];
     const index = subscribers.indexOf(consumer);
@@ -64,16 +67,7 @@ export function Luister() {
     }
   };
 
-  /**
-   * Emit a new event with an optional payload.
-   *
-   * Calling emit will invoke all consumers _synchronously_ in the
-   * order they were subscribed.
-   *
-   * @param event
-   * @param payload
-   */
-  const emit: Emitter = (event, payload) => {
+  const emit: Emit = (event, payload) => {
     const subscribers = eventMap.get(event) ?? [];
 
     subscribers.forEach((subscriber) => subscriber(payload));
@@ -82,4 +76,32 @@ export function Luister() {
   return { emit, subscribe, unsubscribe, eventMap };
 }
 
-export const { emit, subscribe, unsubscribe, eventMap } = Luister();
+const globalBus = Luister();
+
+/**
+ * Emit an event on the global event bus
+ *
+ * See {@link Emit}
+ */
+export const emit: Emit = globalBus.emit;
+
+/**
+ * Subscribe to an event on the global event bus
+ *
+ * See {@link Subscribe}
+ */
+export const subscribe: Subscribe = globalBus.subscribe;
+
+/**
+ * Unsubscribe from an event on the global event bus
+ *
+ * See {@link Unsubscribe}
+ */
+export const unsubscribe: Unsubscribe = globalBus.unsubscribe;
+
+/**
+ * Event -> Consumer mapping of the global event bus
+ *
+ * See {@link EventMap}
+ */
+export const eventMap: EventMap = globalBus.eventMap;
