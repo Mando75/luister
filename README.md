@@ -1,5 +1,8 @@
 # Luister
 
+[![coverage report](https://gitlab.com/Mando75/luister/badges/master/coverage.svg)](https://gitlab.com/Mando75/luister/-/commits/master)
+[![pipeline status](https://gitlab.com/Mando75/luister/badges/master/pipeline.svg)](https://gitlab.com/Mando75/luister/-/commits/master)
+
 A functional event emitter library written in Typescript
 
 ## Installation
