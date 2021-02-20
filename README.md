@@ -41,12 +41,13 @@ import { emit, subscribe, unsubscribe } from "@mando75/luister";
 // subscribe to events
 const event = Symbol("event");
 
+// Define a consumer externally
 const loggingConsumer = (payload: string) => console.log(payload);
-const alertConsumer = (payload: string) => alert(payload);
 
 subscribe(event, loggingConsumer);
 
-const unsubscribeAlert = subscribe(event, alertConsumer);
+// Or provide one inline
+const unsubscribeAlert = subscribe(event, (payload: string) => alert(payload));
 
 // Will invoke both the logging and alert consumers
 emit(event, "Hello World!");
@@ -54,7 +55,8 @@ emit(event, "Hello World!");
 // Unsubscribe by either speciying the event and consumer
 unsubscribe(event, loggingConsumer);
 
-// or using the helper function returned from `subscribe`
+// or using the helper function returned from `subscribe`.
+// This is useful if you would like to use an inline consumer
 unsubscribeAlert();
 ```
 
