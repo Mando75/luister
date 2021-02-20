@@ -19,7 +19,7 @@ const createEventBus = () => {
     }
   };
 
-  const emit: Emitter = async (event, payload) => {
+  const emit: Emitter = (event, payload) => {
     const subscribers = eventMap.get(event);
 
     if (!subscribers) return;
