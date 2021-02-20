@@ -1,0 +1,17 @@
+{
+  "name": "@mando75/luister",
+  "version": "0.0.1",
+  "description": "A simple event emitter library written in typescript",
+  "main": "dist/index.js",
+  "author": "Bryan Müller",
+  "license": "MIT",
+  "repository": "https://github.com/Mando75/luister",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.1",
+    "typescript": "^4.1.5"
+  }
+}
