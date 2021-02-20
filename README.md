@@ -47,10 +47,10 @@ emit(logEvent, { a: "My Message", b: 123 });
 ## Features
 
 - [x] Each event can trigger multiple subscribers.
+  
+- [x] Unsubscribe from events
 
 ## Roadmap
-
-- [ ] Unsubscribe from events
 
 - [ ] Subscribe to multiple events
 
