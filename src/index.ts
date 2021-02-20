@@ -1,3 +1,10 @@
+export interface Luister {
+  emit: Emitter
+  subscribe: Subscribe
+  unsubscribe: Unsubscribe
+  eventMap: EventMap
+}
+
 export type EventMap = Map<string | Symbol, Array<SubscriberCallback<any>>>;
 export type SubscriberCallback<T> = <T>(payload: T) => void;
 export type Subscribe = <T>(
@@ -8,7 +15,7 @@ export type Unsubscribe = <T>(event: string | Symbol, callback: SubscriberCallba
 export type Unsubscriber = () => ReturnType<Unsubscribe>
 export type Emitter = <T>(event: string | Symbol, payload?: T) => void;
 
-export const createEventBus = () => {
+export const createEventBus = (): Luister => {
   /**
    * Tracks the registered events and their subscribers
    */
