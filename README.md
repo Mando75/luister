@@ -49,6 +49,9 @@ Subscribe to wildcard events
 
 Asynchronous events (via Promises)
 
+## Contributing
+
+Contributions are not open at this time. Feel free to open an issue for any bugs you find in the code, but any non-maintainer created pull requests will be closed. 
 
 ## Code of Conduct
 
