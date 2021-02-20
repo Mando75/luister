@@ -1,10 +1,3 @@
-export interface Luister {
-  emit: Emitter
-  subscribe: Subscribe
-  unsubscribe: Unsubscribe
-  eventMap: EventMap
-}
-
 export type EventMap = Map<string | Symbol, Array<Consumer<any>>>;
 export type Consumer<T> = <T>(payload: T) => void;
 export type Subscribe = <T>(
@@ -21,7 +14,7 @@ export type Emitter = <T>(event: string | Symbol, payload?: T) => void;
  *
  * Useful if you wish to isolate groups events from each other
  */
-export const createEventBus = (): Luister => {
+export default function Luister() {
   /**
    * Tracks the registered events and their subscribers.
    */
@@ -86,4 +79,4 @@ export const createEventBus = (): Luister => {
   return { emit, subscribe, unsubscribe, eventMap };
 };
 
-export const { emit, subscribe, unsubscribe, eventMap } = createEventBus();
+export const { emit, subscribe, unsubscribe, eventMap } = Luister();
