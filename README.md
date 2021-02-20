@@ -14,7 +14,13 @@ npm install @mando75/luister
 
 ## Usage
 
-The library emits two functions, emit and subscribe.
+The library emits two functions, `emit` and `subscribe`.
+
+Use `subscribe` to listen to a particular event, and process a payload when it is emitted.
+
+Use `emit` to trigger an event and call any subscribers with a given payload.
+
+### Example
 
 ```typescript
 import { emit, subscribe } from "@mando75/luister";
