@@ -17,31 +17,58 @@ npm install @mando75/luister
 
 ## Usage
 
-The library emits two functions, `emit` and `subscribe`.
+The library provides a global event bus that you can use by using the named exports `emit`, `subscribe`, and `unsubscribe`.
 
-Use `subscribe` to listen to a particular event, and process a payload when it is emitted.
+Alternatively, you can create an isolated event bus by invoking the default export. The return value of this function includes
+the same `emit`, `subscribe`, and `unsubscribe` methods as the global bus.
 
 Use `emit` to trigger an event and call any subscribers with a given payload.
 
+Use `subscribe` to listen to a particular event, and process a payload when it is emitted. Also returns a function
+that you can invoke to unsubscribe the consumer from the event
+
+Use `unsubscribe` to remove a consumer from a given event.
+
+
 ### Example
 
+#### Global Bus
 ```typescript
-import { emit, subscribe } from "@mando75/luister";
+import { emit, subscribe, unsubscribe } from "@mando75/luister";
 
 // You can use either symbols or string keys to 
 // subscribe to events
-const logEvent = Symbol("logEvent");
+const event = Symbol("event");
 
-interface LogPayload {
-  a: string;
-  b: number;
-}
+const loggingConsumer = (payload: string) => console.log(payload)
+const alertConsumer = (payload: string) => alert(payload)
 
-subscribe(logEvent, (payload: LogPayload) => {
-  logger(payload);
-});
+subscribe(event, loggingConsumer);
 
-emit(logEvent, { a: "My Message", b: 123 });
+const unsubscribeAlert = subscribe(event, alertConsumer)
+
+// Will invoke both the logging and alert consumers
+emit(event, "Hello World!");
+
+// Unsubscribe by either speciying the event and consumer
+unsubscribe(event, loggingConsumer)
+
+// or using the helper function returned from `subscribe`
+unsubscribeAlert()
+```
+
+#### Create an isolated bus
+
+```typescript
+import Luister from "@mando75/luister";
+
+// Use default export to create your own bus.
+const myEventBus = Luister()
+
+myEventBus.subscribe('print-message', (payload: string) => console.log(payload))
+
+myEventBus.emit('print-message', "Hello World!")
+
 ```
 
 ## Features
@@ -52,9 +79,9 @@ emit(logEvent, { a: "My Message", b: 123 });
 
 ## Roadmap
 
-- [ ] Subscribe to multiple events
+- [ ] Subscribe to multiple events with the same consumer
 
-- [ ] Subscribe to wildcard events
+- [ ] Subscribe to all events
 
 - [ ] Asynchronous events (via Promises)
 
