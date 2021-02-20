@@ -3,8 +3,12 @@
   "version": "0.0.1",
   "description": "A simple event emitter library written in typescript",
   "main": "dist/index.js",
-  "author": "Bryan Müller",
+  "author": "Bryan Müller <bmuller0975@gmail.com>",
   "license": "MIT",
+  "files": [
+    "src",
+    "dist"
+  ],
   "repository": "https://github.com/Mando75/luister",
   "scripts": {
     "build": "microbundle",
@@ -12,6 +16,13 @@
     "test": "yarn jest",
     "test:coverage": "yarn jest --coverage"
   },
+  "keywords": [
+    "events",
+    "pubsub",
+    "eventemitter",
+    "typescript",
+    "emitter"
+  ],
   "source": "./src/index.ts",
   "exports": "./dist/index.modern.js",
   "module": "./dist/index.module.js",

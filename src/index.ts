@@ -17,7 +17,7 @@ export type Emitter = <T>(event: string | Symbol, payload?: T) => void;
  *
  * Useful if you wish to isolate groups events from each other
  */
-export default function Luister() {
+export function Luister() {
   /**
    * Tracks the registered events and their subscribers.
    */

@@ -17,64 +17,66 @@ npm install @mando75/luister
 
 ## Usage
 
-The library provides a global event bus that you can use by using the named exports `emit`, `subscribe`, and `unsubscribe`.
+The library provides a global event bus that you can use by using the named exports `emit`, `subscribe`,
+and `unsubscribe`.
 
-Alternatively, you can create an isolated event bus by invoking the default export. The return value of this function includes
-the same `emit`, `subscribe`, and `unsubscribe` methods as the global bus.
+Alternatively, you can create an isolated event bus by invoking the named export `Luister`. The return value of this
+function includes the same `emit`, `subscribe`, and `unsubscribe` methods as the global bus.
 
 Use `emit` to trigger an event and call any subscribers with a given payload.
 
-Use `subscribe` to listen to a particular event, and process a payload when it is emitted. Also returns a function
-that you can invoke to unsubscribe the consumer from the event
+Use `subscribe` to listen to a particular event, and process a payload when it is emitted. Also returns a function that
+you can invoke to unsubscribe the consumer from the event
 
 Use `unsubscribe` to remove a consumer from a given event.
-
 
 ### Example
 
 #### Global Bus
+
 ```typescript
 import { emit, subscribe, unsubscribe } from "@mando75/luister";
 
-// You can use either symbols or string keys to 
+// You can use either symbols or string keys to
 // subscribe to events
 const event = Symbol("event");
 
-const loggingConsumer = (payload: string) => console.log(payload)
-const alertConsumer = (payload: string) => alert(payload)
+const loggingConsumer = (payload: string) => console.log(payload);
+const alertConsumer = (payload: string) => alert(payload);
 
 subscribe(event, loggingConsumer);
 
-const unsubscribeAlert = subscribe(event, alertConsumer)
+const unsubscribeAlert = subscribe(event, alertConsumer);
 
 // Will invoke both the logging and alert consumers
 emit(event, "Hello World!");
 
 // Unsubscribe by either speciying the event and consumer
-unsubscribe(event, loggingConsumer)
+unsubscribe(event, loggingConsumer);
 
 // or using the helper function returned from `subscribe`
-unsubscribeAlert()
+unsubscribeAlert();
 ```
 
 #### Create an isolated bus
 
 ```typescript
-import Luister from "@mando75/luister";
+import { Luister } from "@mando75/luister";
 
 // Use default export to create your own bus.
-const myEventBus = Luister()
+const myEventBus = Luister();
 
-myEventBus.subscribe('print-message', (payload: string) => console.log(payload))
+myEventBus.subscribe("print-message", (payload: string) =>
+  console.log(payload)
+);
 
-myEventBus.emit('print-message', "Hello World!")
-
+myEventBus.emit("print-message", "Hello World!");
 ```
 
 ## Features
 
 - [x] Each event can trigger multiple subscribers.
-  
+
 - [x] Unsubscribe from events
 
 ## Roadmap
@@ -87,10 +89,11 @@ myEventBus.emit('print-message', "Hello World!")
 
 ## Contributing
 
-Contributions are not open at this time. Feel free to open an issue for any bugs you find in the code, but any non-maintainer created pull requests will be closed. 
+Contributions are not open at this time. Feel free to open an issue for any bugs you find in the code, but any
+non-maintainer created pull requests will be closed.
 
 ## Code of Conduct
 
 Treat others how you would like to be treated.
 
-Trolling, harassment, or discrimination will not be tolerated. 
+Trolling, harassment, or discrimination will not be tolerated.
