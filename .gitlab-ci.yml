@@ -1,0 +1,47 @@
+image: node:14
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+  - apt-get update -qq && apt-get install
+
+stages:
+  - build
+  - publish-docs
+
+build-package:
+  stage: build
+  before_script:
+    - rm -rf .yarn
+    - yarn install
+  script:
+    - yarn build
+
+test-package:
+  stage: build
+  before_script:
+    - rm -rf .yarn
+    - yarn install
+  script:
+    - yarn test:coverage
+  artifacts:
+    name: coverage
+    paths:
+      - coverage/
+    expire_in: 30 days
+
+pages:
+  stage: publish-docs
+  before_script:
+    - rm -rf .yarn
+    - yarn install
+  script:
+    - yarn publish:docs
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+
