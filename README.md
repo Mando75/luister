@@ -10,7 +10,7 @@ A functional event emitter library written in Typescript
 **Coming Soon**
 
 ```shell
-yarn install @mando75/luister
+yarn add @mando75/luister
 # OR
 npm install @mando75/luister
 ```
