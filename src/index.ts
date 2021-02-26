@@ -87,8 +87,16 @@ export function Luister() {
   const emitAsync: EmitAsync = async (event, payload) => {
     const subscribers = eventMap.get(event) ?? [];
 
-    const promises = subscribers.map((subscriber) =>
-      Promise.resolve(subscriber(payload))
+    const promises = subscribers.map(
+      (subscriber) =>
+        new Promise<void>((resolve, reject) => {
+          try {
+            subscriber(payload);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        })
     );
 
     return await Promise.allSettled(promises);
