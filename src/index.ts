@@ -41,6 +41,17 @@ export type Unsubscriber = () => ReturnType<Unsubscribe>;
 export type Emit = <T>(event: string | Symbol, payload?: T) => void;
 
 /**
+ * Emit a new event with an optional payload.
+ *
+ * Calling emitAsync will invoke all consumers _asynchronously_ (via Promise) and
+ * return the result of calling Promise.allSettled on the promisified consumers.
+ */
+export type EmitAsync = <T>(
+  event: string | Symbol,
+  payload?: T
+) => Promise<Array<PromiseSettledResult<void>>>;
+
+/**
  * Create a new event bus. Will return a new
  * eventMap and it's associated emit/subscribe functions
  *
@@ -73,7 +84,17 @@ export function Luister() {
     subscribers.forEach((subscriber) => subscriber(payload));
   };
 
-  return { emit, subscribe, unsubscribe, eventMap };
+  const emitAsync: EmitAsync = async (event, payload) => {
+    const subscribers = eventMap.get(event) ?? [];
+
+    const promises = subscribers.map((subscriber) =>
+      Promise.resolve(subscriber(payload))
+    );
+
+    return await Promise.allSettled(promises);
+  };
+
+  return { emit, emitAsync, subscribe, unsubscribe, eventMap };
 }
 
 const globalBus = Luister();
@@ -84,6 +105,14 @@ const globalBus = Luister();
  * See {@link Emit}
  */
 export const emit: Emit = globalBus.emit;
+
+/**
+ * Emit an event and call the subscribers asynchronously via
+ * promises
+ *
+ * See {@link EmitAsync}
+ */
+export const emitAsync: EmitAsync = globalBus.emitAsync;
 
 /**
  * Subscribe to an event on the global event bus
