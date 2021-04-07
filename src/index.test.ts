@@ -1,4 +1,4 @@
-import { emit, eventMap, subscribe, unsubscribe } from "./";
+import { emit, emitAsync, eventMap, subscribe, unsubscribe } from "./";
 
 describe("Luister", () => {
   const TEST_EVENT = Symbol("test:event");
@@ -137,6 +137,38 @@ describe("Luister", () => {
       expect(eventMap.get(TEST_EVENT)).toBeUndefined();
 
       expect(unsubscribe(TEST_EVENT, callback1)).toBeFalsy();
+    });
+  });
+
+  describe("EmitAsync", () => {
+    it("should invoke the subscribers asynchronously", async () => {
+      subscribe(TEST_EVENT, callback1);
+      subscribe(TEST_EVENT, callback2);
+      subscribe(TEST_EVENT, callback3);
+
+      await emitAsync(TEST_EVENT, payload);
+
+      expect(callback1).toHaveBeenCalledWith(payload);
+      expect(callback2).toHaveBeenCalledWith(payload);
+      expect(callback3).toHaveBeenCalledWith(payload);
+    });
+
+    it("should reject any failed subscribers", async () => {
+      const error = new Error("test");
+      const errorCallback = jest.fn(() => {
+        throw error;
+      });
+
+      subscribe(TEST_EVENT, callback1);
+      subscribe(TEST_EVENT, errorCallback);
+
+      const result = await emitAsync(TEST_EVENT, payload);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].status).toEqual("fulfilled");
+      expect(result[1].status).toEqual("rejected");
+      const failed = result[1] as PromiseRejectedResult;
+      expect(failed.reason).toEqual(error);
     });
   });
 });
