@@ -80,14 +80,14 @@ myEventBus.emit("print-message", "Hello World!");
 - [x] Each event can trigger multiple subscribers.
 
 - [x] Unsubscribe from events
+  
+- [x] Asynchronous events (via Promises)
 
 ## Roadmap
 
 - [ ] Subscribe to multiple events with the same consumer
 
 - [ ] Subscribe to all events
-
-- [ ] Asynchronous events (via Promises)
 
 ## Contributing
 
