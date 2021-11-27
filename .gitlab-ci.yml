@@ -1,4 +1,4 @@
-image: node:lts-alpine
+image: node:lts
 
 before_script:
   - apt-get update -qq && apt-get install
