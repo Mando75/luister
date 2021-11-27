@@ -12,9 +12,9 @@
   "repository": "https://github.com/Mando75/luister",
   "scripts": {
     "build": "microbundle",
-    "publish:docs": "yarn typedoc",
-    "test": "yarn jest",
-    "test:coverage": "yarn jest --coverage"
+    "publish:docs": "pnpm typedoc",
+    "test": "pnpm jest",
+    "test:coverage": "pnpm jest --coverage"
   },
   "keywords": [
     "events",
@@ -27,17 +27,16 @@
   "exports": "./dist/index.modern.js",
   "module": "./dist/index.module.js",
   "unpkg": "./dist/index.umd.js",
-  "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^26.0.20",
-    "husky": "^5.0.9",
-    "jest": "^26.6.3",
-    "microbundle": "^0.13.0",
-    "prettier": "^2.2.1",
-    "pretty-quick": "^3.1.0",
-    "ts-jest": "^26.5.1",
-    "typedoc": "^0.20.26",
-    "typescript": "^4.1.5"
+    "@types/jest": "^27.0.3",
+    "husky": "^7.0.4",
+    "jest": "^27.3.1",
+    "microbundle": "^0.14.2",
+    "prettier": "^2.4.1",
+    "pretty-quick": "^3.1.2",
+    "ts-jest": "^27.0.7",
+    "typedoc": "^0.22.9",
+    "typescript": "^4.5.2"
   },
   "husky": {
     "hooks": {

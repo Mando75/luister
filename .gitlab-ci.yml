@@ -1,11 +1,16 @@
-image: node:14
-
-cache:
-  paths:
-    - node_modules/
+image: node:lts
 
 before_script:
   - apt-get update -qq && apt-get install
+  - curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
+  - pnpm config set store-dir .pnpm-store
+  - pnpm prune
+  - pnpm install --frozen-lockfile
+
+cache:
+  key: "$CI_COMMIE_REF_SLUG"
+  paths:
+    - .pnpm-store
 
 stages:
   - build
@@ -13,19 +18,13 @@ stages:
 
 build-package:
   stage: build
-  before_script:
-    - rm -rf .yarn
-    - yarn install
   script:
-    - yarn build
+    - pnpm build
 
 test-package:
   stage: build
-  before_script:
-    - rm -rf .yarn
-    - yarn install
   script:
-    - yarn test:coverage
+    - pnpm test:coverage
   artifacts:
     name: coverage
     paths:
@@ -34,11 +33,8 @@ test-package:
 
 pages:
   stage: publish-docs
-  before_script:
-    - rm -rf .yarn
-    - yarn install
   script:
-    - yarn publish:docs
+    - pnpm publish:docs
   artifacts:
     paths:
       - public
