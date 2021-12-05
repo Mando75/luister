@@ -14,6 +14,11 @@ yarn add @mando75/luister
 npm install @mando75/luister
 ```
 
+## Source Code
+
+* [GitLab Repository](https://gitlab.com/Mando75/luister)
+* [GitHub Repository (Mirror)](https://github.com/Mando75/luister)
+
 ## Usage
 
 Checkout the [documentation](https://luister.bmuller.net) for a full API reference.
