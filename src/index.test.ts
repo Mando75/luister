@@ -1,174 +1,146 @@
-import { emit, emitAsync, eventMap, subscribe, unsubscribe } from "./";
+import { Luister } from "./index";
 
 describe("Luister", () => {
-  const TEST_EVENT = Symbol("test:event");
   const callback1 = jest.fn();
   const callback2 = jest.fn();
   const callback3 = jest.fn();
 
-  const payload = {
-    a: Symbol("payload"),
-    b: "payload",
-    c: 0,
+  const foo = Symbol("foo");
+
+  interface TestEventMapping {
+    [foo]: string;
+    bar: number;
+    baz: {
+      qux: string;
+    };
+  }
+
+  let bus = Luister<TestEventMapping>();
+
+  const payloads: TestEventMapping = {
+    [foo]: "lorem",
+    bar: 69,
+    baz: {
+      qux: "ipsum",
+    },
   };
 
   afterEach(() => {
-    eventMap.clear();
+    bus = Luister<TestEventMapping>();
     jest.resetAllMocks();
   });
 
-  describe("subscribe", () => {
-    it("should add an event to the bus", () => {
-      subscribe(TEST_EVENT, callback1);
-
-      expect(eventMap.get(TEST_EVENT)).toStrictEqual([callback1]);
-    });
-
-    it("should append multiple callbacks to the same event symbol", () => {
-      subscribe(TEST_EVENT, callback1);
-      subscribe(TEST_EVENT, callback2);
-
-      expect(eventMap.get(TEST_EVENT)).toStrictEqual([callback1, callback2]);
-    });
-
-    it("should return an unsubscriber that removes the callback from the event map", () => {
-      subscribe(TEST_EVENT, callback1);
-      const unsubscribeCallback2 = subscribe(TEST_EVENT, callback2);
-      subscribe(TEST_EVENT, callback3);
-
-      expect(eventMap.get(TEST_EVENT)).toStrictEqual([
-        callback1,
-        callback2,
-        callback3,
-      ]);
-
-      const success = unsubscribeCallback2();
-
-      expect(success).toBeTruthy();
-      expect(eventMap.get(TEST_EVENT)).toStrictEqual([callback1, callback3]);
-    });
-
-    it("should not call an event when returned unsubscriber is invoked", () => {
-      subscribe(TEST_EVENT, callback1);
-      const unsubscribeCallback2 = subscribe(TEST_EVENT, callback2);
-
-      emit(TEST_EVENT, payload);
-
-      const success = unsubscribeCallback2();
-
-      expect(success).toBeTruthy();
-      emit(TEST_EVENT, payload);
-
-      expect(callback1).toHaveBeenCalledTimes(2);
-      expect(callback2).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("emit", () => {
-    it("should invoke the subscribers when event is emitted", () => {
-      subscribe(TEST_EVENT, callback1);
-      subscribe(TEST_EVENT, callback2);
-
-      emit(TEST_EVENT);
+  describe("subscribing to events", () => {
+    it("should call the consumer when event is emitted", () => {
+      bus.subscribe(foo, callback1);
+      bus.emit(foo, payloads[foo]);
       expect(callback1).toHaveBeenCalledTimes(1);
+      expect(callback1).toHaveBeenCalledWith(payloads[foo]);
+    });
+
+    it("should call all consumers when an event is emitted", () => {
+      bus.subscribe("bar", callback1);
+      bus.subscribe("bar", callback2);
+      bus.subscribe("bar", callback3);
+      bus.emit("bar", payloads.bar);
+
+      expect(callback1).toHaveBeenCalledTimes(1);
+      expect(callback1).toHaveBeenCalledWith(payloads.bar);
       expect(callback2).toHaveBeenCalledTimes(1);
+      expect(callback2).toHaveBeenCalledWith(payloads.bar);
+      expect(callback3).toHaveBeenCalledTimes(1);
+      expect(callback3).toHaveBeenCalledWith(payloads.bar);
     });
 
-    it("should pass the same payload to each subscriber", () => {
-      subscribe(TEST_EVENT, callback1);
-      subscribe(TEST_EVENT, callback2);
+    it("should not invoke consumers for events that were not emitted", () => {
+      bus.subscribe(foo, callback1);
+      bus.subscribe("bar", callback2);
+      bus.subscribe("baz", callback3);
 
-      emit(TEST_EVENT, payload);
-      expect(callback1).toHaveBeenCalledWith(payload);
-      expect(callback2).toHaveBeenCalledWith(payload);
-    });
+      bus.emit(foo, payloads[foo]);
 
-    it("should do nothing if no subscribers exist for an event", () => {
-      subscribe(TEST_EVENT, callback1);
-      emit(Symbol("ignored:event"), payload);
-      expect(callback1).not.toHaveBeenCalled();
+      expect(callback1).toHaveBeenCalledTimes(1);
+      expect(callback1).toHaveBeenCalledWith(payloads[foo]);
+      expect(callback2).not.toHaveBeenCalled();
+      expect(callback3).not.toHaveBeenCalled();
     });
   });
 
-  describe("unsubscribe", () => {
-    it("should return true if callback was found and removed", () => {
-      subscribe(TEST_EVENT, callback1);
-      subscribe(TEST_EVENT, callback2);
-
-      expect(unsubscribe(TEST_EVENT, callback2)).toBeTruthy();
-    });
-
-    it("should return false if callback was not found for event", () => {
-      subscribe(TEST_EVENT, callback1);
-      expect(unsubscribe(TEST_EVENT, callback2)).toBeFalsy();
-    });
-
-    it("should remove the callback from the event map", () => {
-      subscribe(TEST_EVENT, callback1);
-      subscribe(TEST_EVENT, callback2);
-      subscribe(TEST_EVENT, callback3);
-
-      expect(eventMap.get(TEST_EVENT)).toStrictEqual([
-        callback1,
-        callback2,
-        callback3,
-      ]);
-
-      unsubscribe(TEST_EVENT, callback2);
-
-      expect(eventMap.get(TEST_EVENT)).toStrictEqual([callback1, callback3]);
-    });
-
-    it("should not publish an event to an unsubbed subscriber", () => {
-      subscribe(TEST_EVENT, callback1);
-      subscribe(TEST_EVENT, callback2);
-
-      emit(TEST_EVENT, payload);
-
-      unsubscribe(TEST_EVENT, callback2);
-
-      emit(TEST_EVENT, payload);
-
-      expect(callback1).toHaveBeenCalledTimes(2);
-      expect(callback2).toHaveBeenCalledTimes(1);
-    });
-
-    it("should return false if event was not registered", () => {
-      expect(eventMap.get(TEST_EVENT)).toBeUndefined();
-
-      expect(unsubscribe(TEST_EVENT, callback1)).toBeFalsy();
-    });
-  });
-
-  describe("EmitAsync", () => {
-    it("should invoke the subscribers asynchronously", async () => {
-      subscribe(TEST_EVENT, callback1);
-      subscribe(TEST_EVENT, callback2);
-      subscribe(TEST_EVENT, callback3);
-
-      await emitAsync(TEST_EVENT, payload);
-
-      expect(callback1).toHaveBeenCalledWith(payload);
-      expect(callback2).toHaveBeenCalledWith(payload);
-      expect(callback3).toHaveBeenCalledWith(payload);
-    });
-
-    it("should reject any failed subscribers", async () => {
-      const error = new Error("test");
-      const errorCallback = jest.fn(() => {
-        throw error;
+  describe("unsubscribing from events", () => {
+    describe("using subscribe return value", () => {
+      it("should not call the unsubbed consumer", () => {
+        const unsub = bus.subscribe("baz", callback1);
+        bus.emit("baz", payloads.baz);
+        unsub();
+        bus.emit("baz", payloads.baz);
+        expect(callback1).toHaveBeenCalledTimes(1);
+        expect(callback1).toHaveBeenCalledWith(payloads.baz);
       });
 
-      subscribe(TEST_EVENT, callback1);
-      subscribe(TEST_EVENT, errorCallback);
+      it("should call remaining subscribed consumers", () => {
+        const unsub = bus.subscribe("bar", callback1);
+        bus.subscribe("bar", callback2);
+        bus.subscribe("bar", callback3);
 
-      const result = await emitAsync(TEST_EVENT, payload);
+        bus.emit("bar", payloads.bar);
+        unsub();
+        bus.emit("bar", payloads.bar);
+        expect(callback1).toHaveBeenCalledTimes(1);
+        expect(callback2).toHaveBeenCalledTimes(2);
+        expect(callback3).toHaveBeenCalledTimes(2);
+      });
+    });
 
-      expect(result).toHaveLength(2);
-      expect(result[0].status).toEqual("fulfilled");
-      expect(result[1].status).toEqual("rejected");
-      const failed = result[1] as PromiseRejectedResult;
-      expect(failed.reason).toEqual(error);
+    describe("using unsubscribe function", () => {
+      it("should return true if able to unsubscribe", () => {
+        bus.subscribe("bar", callback1);
+        expect(bus.unsubscribe("bar", callback1)).toBe(true);
+      });
+
+      it("should return false if it cannot find the callback to unsubscribe", () => {
+        bus.subscribe("bar", callback1);
+        expect(bus.unsubscribe("bar", callback2)).toBe(false);
+      });
+      it("should not call the unsubbed consumer", () => {
+        bus.subscribe("baz", callback1);
+        bus.emit("baz", payloads.baz);
+        bus.unsubscribe("baz", callback1);
+        bus.emit("baz", payloads.baz);
+        expect(callback1).toHaveBeenCalledTimes(1);
+        expect(callback1).toHaveBeenCalledWith(payloads.baz);
+      });
+
+      it("should call remaining subscribed consumers", () => {
+        bus.subscribe("bar", callback1);
+        bus.subscribe("bar", callback2);
+        bus.subscribe("bar", callback3);
+
+        bus.emit("bar", payloads.bar);
+        bus.unsubscribe("bar", callback1);
+        bus.emit("bar", payloads.bar);
+        expect(callback1).toHaveBeenCalledTimes(1);
+        expect(callback2).toHaveBeenCalledTimes(2);
+        expect(callback3).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
+
+  describe("unknown events", () => {
+    let untypedBus = Luister();
+
+    beforeEach(() => {
+      untypedBus = Luister();
+    });
+    describe("unsubscribing", () => {
+      it("should return false if trying to unsub", () => {
+        expect(untypedBus.unsubscribe("unknown", callback1)).toBe(false);
+      });
+    });
+
+    describe("emitting", () => {
+      it("should do nothing when emitting unknown event", () => {
+        expect(() => untypedBus.emit("unknown", undefined)).not.toThrow();
+      });
     });
   });
 });
