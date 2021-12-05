@@ -4,7 +4,7 @@
 [![coverage report](https://gitlab.com/Mando75/luister/badges/master/coverage.svg)](https://gitlab.com/Mando75/luister/-/commits/master)
 [![pipeline status](https://gitlab.com/Mando75/luister/badges/master/pipeline.svg)](https://gitlab.com/Mando75/luister/-/commits/master)
 
-A functional event emitter library written in Typescript
+A simple event emitter library written in Typescript
 
 ## Installation
 
@@ -16,11 +16,13 @@ npm install @mando75/luister
 
 ## Usage
 
+Checkout the [documentation](https://luister.bmuller.net) for a full API reference.
+
 You can create an event bus by invoking the named export `Luister`. The return value of this function is an object
 with `emit`, `subscribe`, and `unsubscribe` methods as properties.
 
-Use `subscribe` to listen to a particular event, and process a payload when it is emitted. Also returns a function that
-you can invoke to unsubscribe the consumer from the event
+Use `subscribe` to listen to a particular event. It will be called and receive a payload when the event is emitted. It
+also returns a function that you can invoke to unsubscribe the consumer from the event for easy cleanup.
 
 Use `emit` to trigger an event and call any subscribers with a given payload.
 
@@ -30,7 +32,7 @@ Use `unsubscribe` to remove a consumer from a given event.
 import {Luister} from "@mando75/luister";
 
 
-// Define an interface mapping your event key's to their payload types
+// Define an interface mapping your event keys to their payload types
 // You can use either symbols or strings as event keys
 // It is highly recommended to provide an event mapping so that your
 // consumers and emits remain typesafe
@@ -46,7 +48,9 @@ const luister = Luister<MyEvents>()
 
 // To subscribe to an event, provide the event key
 // and a consumer to process the event data
-const unsubFromFoo = luister.subscribe(fooEvent, (payload) => console.log(payload.message))
+const unsubFromFoo = luister.subscribe(fooEvent, (payload) => {
+  console.log(payload.message)
+})
 
 const barConsumer = (message: string) => console.log(message)
 luister.subscribe('barEvent', barConsumer)
