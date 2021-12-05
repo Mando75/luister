@@ -1,16 +1,17 @@
 {
   "name": "@mando75/luister",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A simple event emitter library written in typescript",
   "main": "dist/index.js",
   "author": "Bryan Müller <bmuller0975@gmail.com>",
   "license": "MIT",
   "files": [
-    "src",
-    "dist"
+    "dist/*",
+    ".gitignore"
   ],
   "repository": "https://github.com/Mando75/luister",
   "scripts": {
+    "prebuild": "rm -rf dist",
     "build": "microbundle",
     "publish:docs": "pnpm typedoc",
     "test": "pnpm jest",
