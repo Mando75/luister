@@ -1,5 +1,6 @@
 # Luister
 
+[![npm version](https://badge.fury.io/js/@mando75%2Fluister.svg)](https://badge.fury.io/js/@mando75%2Fluister)
 [![coverage report](https://gitlab.com/Mando75/luister/badges/master/coverage.svg)](https://gitlab.com/Mando75/luister/-/commits/master)
 [![pipeline status](https://gitlab.com/Mando75/luister/badges/master/pipeline.svg)](https://gitlab.com/Mando75/luister/-/commits/master)
 
