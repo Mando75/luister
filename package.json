@@ -9,7 +9,7 @@
     "dist/*",
     ".gitignore"
   ],
-  "repository": "https://github.com/Mando75/luister",
+  "repository": "https://gitlab.com/Mando75/luister",
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "microbundle",
