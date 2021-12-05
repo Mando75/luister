@@ -2,7 +2,6 @@
   "name": "@mando75/luister",
   "version": "1.0.0",
   "description": "A simple event emitter library written in typescript",
-  "main": "dist/index.js",
   "author": "Bryan Müller <bmuller0975@gmail.com>",
   "license": "MIT",
   "files": [
@@ -25,7 +24,11 @@
     "emitter"
   ],
   "source": "./src/index.ts",
-  "exports": "./dist/index.modern.js",
+  "exports": {
+    "require": "./dist/index",
+    "default": "./dist/index.modern.js"
+  },
+  "main": "./dist/index",
   "module": "./dist/index.module.js",
   "unpkg": "./dist/index.umd.js",
   "devDependencies": {
