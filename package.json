@@ -1,6 +1,6 @@
 {
   "name": "@mando75/luister",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple event emitter library written in typescript",
   "author": "Bryan Müller <bmuller0975@gmail.com>",
   "license": "MIT",
