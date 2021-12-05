@@ -30,12 +30,13 @@ Use `unsubscribe` to remove a consumer from a given event.
 ```typescript
 import {Luister} from "@mando75/luister";
 
-const fooEvent = Symbol('fooEvent')
 
 // Define an interface mapping your event key's to their payload types
 // You can use either symbols or strings as event keys
 // It is highly recommended to provide an event mapping so that your
 // consumers and emits remain typesafe
+const fooEvent = Symbol('fooEvent')
+
 interface MyEvents {
   [fooEvent]: { message: string }
   barEvent: string
@@ -45,7 +46,7 @@ interface MyEvents {
 const luister = Luister<MyEvents>()
 
 // To subscribe to an event, provide the event key
-// and a callback to process the event data
+// and a consumer to process the event data
 const unsubFromFoo = luister.subscribe(fooEvent, (payload) => console.log(payload.message))
 
 const barConsumer = (message: string) => console.log(message)
@@ -57,8 +58,8 @@ luister.emit(fooEvent, {message: 'Hello foo!'})
 luister.emit('barEvent', 'Hello bar!')
 
 // We can unsubcribe from an event by using the helper returned by subscribe
+// Or we can pass the event key and consumer to the unsubscribe method
 unsubFromFoo()
-// Or we can bass the event key and consumer to unsubscribe
 luister.unsubscribe('barEvent', barConsumer)
 ```
 
