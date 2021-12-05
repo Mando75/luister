@@ -15,7 +15,7 @@ export interface EventPayloadMap {
  * Returns a function that can be used to unsubscribe the created consumer
  * from the event.
  */
-type Subscribe<TPayloadMap extends EventPayloadMap> = <
+export type Subscribe<TPayloadMap extends EventPayloadMap> = <
   EventKey extends keyof TPayloadMap
 >(
   event: EventKey,
@@ -29,7 +29,7 @@ type Subscribe<TPayloadMap extends EventPayloadMap> = <
  *
  * Returns false if consumer was not found for given event.
  */
-type Unsubscribe<TPayloadMap extends EventPayloadMap> = <
+export type Unsubscribe<TPayloadMap extends EventPayloadMap> = <
   EventKey extends keyof TPayloadMap
 >(
   event: EventKey,
@@ -39,7 +39,7 @@ type Unsubscribe<TPayloadMap extends EventPayloadMap> = <
 /**
  * Type signature for an event consumer. Called via {@link Emit}
  */
-type Consumer<T> = (payload: T) => void;
+export type Consumer<T> = (payload: T) => void;
 
 /**
  * Emit a new event with payload.
@@ -47,14 +47,14 @@ type Consumer<T> = (payload: T) => void;
  * Calling emit will invoke all consumers _synchronously_ in the
  * order they were subscribed.
  */
-type Emit<TPayloadMap extends EventPayloadMap> = <
+export type Emit<TPayloadMap extends EventPayloadMap> = <
   EventKey extends keyof TPayloadMap
 >(
   event: EventKey,
   payload: TPayloadMap[EventKey]
 ) => void;
 
-interface ILuister<TPayloadMap extends EventPayloadMap> {
+export interface ILuister<TPayloadMap extends EventPayloadMap> {
   unsubscribe: Unsubscribe<TPayloadMap>;
   subscribe: Subscribe<TPayloadMap>;
   emit: Emit<TPayloadMap>;

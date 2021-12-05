@@ -28,7 +28,7 @@ Use `emit` to trigger an event and call any subscribers with a given payload.
 Use `unsubscribe` to remove a consumer from a given event.
 
 ```typescript
-import {Luister} from "./index";
+import {Luister} from "@mando75/luister";
 
 const fooEvent = Symbol('fooEvent')
 
