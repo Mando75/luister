@@ -1,7 +1,7 @@
 {
   "name": "@mando75/luister",
   "homepage": "https://luister.bmuller.net",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A simple event emitter library written in typescript",
   "author": "Bryan Müller <bmuller0975@gmail.com>",
   "license": "MIT",
@@ -9,6 +9,7 @@
     "dist/*",
     ".gitignore"
   ],
+  "types": "dist/index.d.ts",
   "repository": "gitlab:Mando75/luister",
   "scripts": {
     "prebuild": "rm -rf dist",
