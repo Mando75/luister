@@ -60,13 +60,17 @@ export interface ILuister<TPayloadMap extends EventPayloadMap> {
   emit: Emit<TPayloadMap>;
 }
 
+interface DefaultEventPayloadMap {
+  [key: string | symbol]: unknown
+}
+
 /**
  * Creates a new event bus.
  * Expects a mapping of event keys to their payload types
  * @constructor
  */
 export function Luister<
-  TPayloadMap extends EventPayloadMap
+  TPayloadMap extends EventPayloadMap = DefaultEventPayloadMap
 >(): ILuister<TPayloadMap> {
   const eventMap = new Map<keyof TPayloadMap, Array<Consumer<any>>>();
 

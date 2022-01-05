@@ -39,7 +39,8 @@ import { Luister } from "@mando75/luister";
 // Define an interface mapping your event keys to their payload types
 // You can use either symbols or strings as event keys
 // It is highly recommended to provide an event mapping so that your
-// consumers and emits remain typesafe
+// consumers and emits remain typesafe. If you do not provide an event mapping,
+// all payloads will have type of unknown.
 const fooEvent = Symbol("fooEvent");
 
 interface MyEvents {
