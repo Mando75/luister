@@ -16,8 +16,8 @@ npm install @mando75/luister
 
 ## Source Code
 
-* [GitLab Repository](https://gitlab.com/Mando75/luister)
-* [GitHub Repository (Mirror)](https://github.com/Mando75/luister)
+- [GitLab Repository](https://gitlab.com/Mando75/luister)
+- [GitHub Repository (Mirror)](https://github.com/Mando75/luister)
 
 ## Usage
 
@@ -34,41 +34,40 @@ Use `emit` to trigger an event and call any subscribers with a given payload.
 Use `unsubscribe` to remove a consumer from a given event.
 
 ```typescript
-import {Luister} from "@mando75/luister";
-
+import { Luister } from "@mando75/luister";
 
 // Define an interface mapping your event keys to their payload types
 // You can use either symbols or strings as event keys
 // It is highly recommended to provide an event mapping so that your
 // consumers and emits remain typesafe
-const fooEvent = Symbol('fooEvent')
+const fooEvent = Symbol("fooEvent");
 
 interface MyEvents {
-  [fooEvent]: { message: string }
-  barEvent: string
+  [fooEvent]: { message: string };
+  barEvent: string;
 }
 
 // Create a new bus
-const luister = Luister<MyEvents>()
+const luister = Luister<MyEvents>();
 
 // To subscribe to an event, provide the event key
 // and a consumer to process the event data
 const unsubFromFoo = luister.subscribe(fooEvent, (payload) => {
-  console.log(payload.message)
-})
+  console.log(payload.message);
+});
 
-const barConsumer = (message: string) => console.log(message)
-luister.subscribe('barEvent', barConsumer)
+const barConsumer = (message: string) => console.log(message);
+luister.subscribe("barEvent", barConsumer);
 
 // Emit a new event. These emits will result in both the consumers defined above
 // to log their messages to the console
-luister.emit(fooEvent, {message: 'Hello foo!'})
-luister.emit('barEvent', 'Hello bar!')
+luister.emit(fooEvent, { message: "Hello foo!" });
+luister.emit("barEvent", "Hello bar!");
 
 // We can unsubcribe from an event by using the helper returned by subscribe
 // Or we can pass the event key and consumer to the unsubscribe method
-unsubFromFoo()
-luister.unsubscribe('barEvent', barConsumer)
+unsubFromFoo();
+luister.unsubscribe("barEvent", barConsumer);
 ```
 
 ## Features
@@ -85,8 +84,7 @@ luister.unsubscribe('barEvent', barConsumer)
 
 ## Contributing
 
-Contributions are not open at this time. Feel free to open an issue for any bugs you find in the code, but any
-non-maintainer created pull requests will be closed.
+Development takes place on the [GitLab Repository](https://gitlab.com/Mando75/luister). The [GitHub Repository (Mirror)](https://github.com/Mando75/luister) is just a mirror for discoverability. Issues opened in GitHub will be addressed, but any development contributions need to happen on GitLab. Any PRs opened in GitHub will be closed with a message to linking to the GitLab repository.
 
 ## Code of Conduct
 
