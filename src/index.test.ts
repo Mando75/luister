@@ -66,6 +66,16 @@ describe("Luister", () => {
     });
   });
 
+  it("should be able to subscribe to multiple events", () => {
+    bus.subscribe([foo, "bar"], callback1);
+    bus.emit(foo, payloads[foo]);
+    expect(callback1).toHaveBeenCalledTimes(1);
+    expect(callback1).toHaveBeenLastCalledWith(payloads[foo]);
+    bus.emit("bar", payloads.bar);
+    expect(callback1).toHaveBeenCalledTimes(2);
+    expect(callback1).toHaveBeenLastCalledWith(payloads.bar);
+  });
+
   describe("unsubscribing from events", () => {
     describe("using subscribe return value", () => {
       it("should not call the unsubbed consumer", () => {
@@ -89,17 +99,29 @@ describe("Luister", () => {
         expect(callback2).toHaveBeenCalledTimes(2);
         expect(callback3).toHaveBeenCalledTimes(2);
       });
+
+      it("should unsubscribe the consumer from all events", () => {
+        const unsub = bus.subscribe([foo, "bar"], callback1);
+        bus.subscribe("bar", callback2);
+
+        bus.emit(foo, payloads[foo]);
+        bus.emit("bar", payloads.bar);
+        unsub();
+        bus.emit("bar", payloads.bar);
+        expect(callback1).toHaveBeenCalledTimes(2);
+        expect(callback2).toHaveBeenCalledTimes(2);
+      });
     });
 
     describe("using unsubscribe function", () => {
       it("should return true if able to unsubscribe", () => {
         bus.subscribe("bar", callback1);
-        expect(bus.unsubscribe("bar", callback1)).toBe(true);
+        expect(bus.unsubscribe("bar", callback1)).toEqual([true]);
       });
 
       it("should return false if it cannot find the callback to unsubscribe", () => {
         bus.subscribe("bar", callback1);
-        expect(bus.unsubscribe("bar", callback2)).toBe(false);
+        expect(bus.unsubscribe("bar", callback2)).toEqual([false]);
       });
       it("should not call the unsubbed consumer", () => {
         bus.subscribe("baz", callback1);
@@ -133,7 +155,7 @@ describe("Luister", () => {
     });
     describe("unsubscribing", () => {
       it("should return false if trying to unsub", () => {
-        expect(untypedBus.unsubscribe("unknown", callback1)).toBe(false);
+        expect(untypedBus.unsubscribe("unknown", callback1)).toEqual([false]);
       });
     });
 
