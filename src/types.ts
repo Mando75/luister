@@ -7,7 +7,7 @@ export interface EventPayloadMap {
 }
 
 /**
- * Subscribe to a new event.
+ * Subscribe to one or more events.
  *
  * Consumer will be invoked _synchronously_ when event is emitted. Consumers
  * will be called in the order they subscribed.
@@ -22,7 +22,7 @@ export type Subscribe<TPayloadMap extends EventPayloadMap> = <
   consumer: Consumer<TPayloadMap[EventKey]>
 ) => () => Array<boolean>;
 /**
- * Unsubscribe a consumer from an event.
+ * Unsubscribe a consumer from one or more events.
  *
  * Returns true if consumer for given event was found and removed.
  *
@@ -47,7 +47,7 @@ export type Consumer<T> = (payload: T) => void;
 export type Emit<TPayloadMap extends EventPayloadMap> = <
   EventKey extends keyof TPayloadMap
 >(
-  event: EventKey | Array<EventKey>,
+  event: EventKey,
   payload: TPayloadMap[EventKey]
 ) => void;
 

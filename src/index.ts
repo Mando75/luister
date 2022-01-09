@@ -8,6 +8,8 @@ import {
   Unsubscribe,
 } from "./types";
 
+export * from "./types";
+
 /**
  * Creates a new event bus.
  * Expects a mapping of event keys to their payload types
@@ -42,10 +44,8 @@ export function Luister<
   };
 
   const emit: Emit<TPayloadMap> = (event, payload) => {
-    const events = toArray(event);
-    events
-      .flatMap((e) => eventMap.get(e) ?? [])
-      .forEach((subscriber) => subscriber(payload));
+    const subscribers = eventMap.get(event) ?? [];
+    subscribers.forEach((subscriber) => subscriber(payload));
   };
 
   return { unsubscribe, subscribe, emit };
