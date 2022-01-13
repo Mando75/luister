@@ -34,7 +34,7 @@ Use `emit` to trigger an event and call any subscribers with a given payload.
 Use `unsubscribe` to remove a consumer from a given event.
 
 ```typescript
-import { Luister } from "@mando75/luister";
+import {Luister} from "@mando75/luister";
 
 // Define an interface mapping your event keys to their payload types
 // You can use either symbols or strings as event keys
@@ -53,21 +53,24 @@ const luister = Luister<MyEvents>();
 
 // To subscribe to an event, provide the event key
 // and a consumer to process the event data
-const unsubFromFoo = luister.subscribe(fooEvent, (payload) => {
-  console.log(payload.message);
+
+// inline consumer
+const unsubFromFoo = luister.subscribe(fooEvent, (payload) => { /* handle payload */
 });
 
-const barConsumer = (message: string) => console.log(message);
+// named consumer
+const barConsumer = (message: string) => { /* print message */
+};
 luister.subscribe("barEvent", barConsumer);
 
-// Emit a new event. These emits will result in both the consumers defined above
-// to log their messages to the console
-luister.emit(fooEvent, { message: "Hello foo!" });
+// Emit a new event. Emitting the events will call the consumers
+// above with the provided payloads
+luister.emit(fooEvent, {message: "Hello foo!"});
 luister.emit("barEvent", "Hello bar!");
 
 // We can unsubcribe from an event by using the helper returned by subscribe
-// Or we can pass the event key and consumer to the unsubscribe method
 unsubFromFoo();
+// Or we can pass the event key and a named consumer to the unsubscribe method
 luister.unsubscribe("barEvent", barConsumer);
 ```
 
@@ -77,15 +80,18 @@ luister.unsubscribe("barEvent", barConsumer);
 
 - [x] Unsubscribe from events
 
-## Roadmap
+- [x] Subscribe to multiple events with the same consumer
 
-- [ ] Subscribe to multiple events with the same consumer
+## Roadmap
 
 - [ ] Subscribe to all events
 
 ## Contributing
 
-Development takes place on the [GitLab Repository](https://gitlab.com/Mando75/luister). The [GitHub Repository (Mirror)](https://github.com/Mando75/luister) is just a mirror for discoverability. Issues opened in GitHub will be addressed, but any development contributions need to happen on GitLab. Any PRs opened in GitHub will be closed with a message to linking to the GitLab repository.
+Development takes place on the [GitLab Repository](https://gitlab.com/Mando75/luister).
+The [GitHub Repository (Mirror)](https://github.com/Mando75/luister) is just a mirror for discoverability. Issues opened
+in GitHub will be addressed, but any development contributions need to happen on GitLab. Any PRs opened in GitHub will
+be closed with a message to linking to the GitLab repository.
 
 ## Code of Conduct
 
