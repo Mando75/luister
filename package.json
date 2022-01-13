@@ -1,7 +1,7 @@
 {
   "name": "@mando75/luister",
   "homepage": "https://luister.bmuller.net",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A simple event emitter library written in typescript",
   "author": "Bryan Müller <bmuller0975@gmail.com>",
   "license": "MIT",
@@ -16,7 +16,8 @@
     "build": "microbundle",
     "publish:docs": "pnpm typedoc",
     "test": "pnpm jest",
-    "test:coverage": "pnpm jest --coverage"
+    "test:coverage": "pnpm jest --coverage",
+    "prepublish": "pnpm test"
   },
   "keywords": [
     "events",
