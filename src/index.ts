@@ -18,33 +18,24 @@ export * from "./types";
 export function Luister<
   TPayloadMap extends EventPayloadMap = DefaultEventPayloadMap
 >(): ILuister<TPayloadMap> {
-  const eventMap = new Map<keyof TPayloadMap, Array<Consumer<any>>>();
+  const eventMap = new Map<keyof TPayloadMap, Set<Consumer<any>>>();
 
   const unsubscribe: Unsubscribe<TPayloadMap> = (event, consumer) => {
     const events = toArray(event);
-    return events.map((e) => {
-      const subscribers = eventMap.get(e) ?? [];
-      const index = subscribers.indexOf(consumer);
-      if (index >= 0) {
-        subscribers.splice(index, 1);
-        eventMap.set(e, subscribers);
-        return true;
-      }
-      return false;
-    });
+    return events.map((e) => eventMap.get(e)?.delete(consumer) ?? false);
   };
 
   const subscribe: Subscribe<TPayloadMap> = (event, consumer) => {
     const events = toArray(event);
     events.forEach((e) => {
-      const subscribers = eventMap.get(e) ?? [];
-      eventMap.set(e, [...subscribers, consumer]);
+      const subscribers = eventMap.get(e) ?? new Set();
+      eventMap.set(e, subscribers.add(consumer));
     });
     return () => unsubscribe(event, consumer);
   };
 
   const emit: Emit<TPayloadMap> = (event, payload) => {
-    const subscribers = eventMap.get(event) ?? [];
+    const subscribers = eventMap.get(event) ?? new Set();
     subscribers.forEach((subscriber) => subscriber(payload));
   };
 
