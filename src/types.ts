@@ -35,6 +35,10 @@ export type Unsubscribe<TPayloadMap extends EventPayloadMap> = <
   consumer: Consumer<TPayloadMap[EventKey]>
 ) => Array<boolean>;
 
+/**
+ * Unsubscribe all consumers from one or more events.
+ * This clears _all_ listeners from a given event.
+ */
 export type UnsubscribeAll<TPayloadMap extends EventPayloadMap> = <
   EventKey extends keyof TPayloadMap
 >(
