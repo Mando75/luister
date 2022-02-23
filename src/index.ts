@@ -6,6 +6,7 @@ import {
   ILuister,
   Subscribe,
   Unsubscribe,
+  UnsubscribeAll,
 } from "./types";
 
 export * from "./types";
@@ -25,6 +26,11 @@ export function Luister<
     return events.map((e) => eventMap.get(e)?.delete(consumer) ?? false);
   };
 
+  const unsubscribeAll: UnsubscribeAll<TPayloadMap> = (event) => {
+    const events = toArray(event);
+    events.map((e) => eventMap.get(e)?.clear());
+  };
+
   const subscribe: Subscribe<TPayloadMap> = (event, consumer) => {
     const events = toArray(event);
     events.forEach((e) => {
@@ -39,7 +45,7 @@ export function Luister<
     subscribers.forEach((subscriber) => subscriber(payload));
   };
 
-  return { unsubscribe, subscribe, emit };
+  return { unsubscribe, subscribe, emit, unsubscribeAll };
 }
 
 function toArray<T>(t: T | Array<T>): Array<T> {

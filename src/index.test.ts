@@ -145,6 +145,21 @@ describe("Luister", () => {
         expect(callback3).toHaveBeenCalledTimes(2);
       });
     });
+
+    describe("using unsubscribeAll", () => {
+      it("should remove all callbacks from the event", () => {
+        bus.subscribe("bar", callback1);
+        bus.subscribe("bar", callback2);
+        bus.subscribe("bar", callback3);
+
+        bus.emit("bar", payloads.bar);
+        bus.unsubscribeAll("bar");
+        bus.emit("bar", payloads.bar);
+        expect(callback1).toHaveBeenCalledTimes(1);
+        expect(callback2).toHaveBeenCalledTimes(1);
+        expect(callback3).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 
   describe("unknown events", () => {

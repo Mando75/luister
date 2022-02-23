@@ -34,6 +34,12 @@ export type Unsubscribe<TPayloadMap extends EventPayloadMap> = <
   event: EventKey | Array<EventKey>,
   consumer: Consumer<TPayloadMap[EventKey]>
 ) => Array<boolean>;
+
+export type UnsubscribeAll<TPayloadMap extends EventPayloadMap> = <
+  EventKey extends keyof TPayloadMap
+>(
+  event: EventKey | Array<EventKey>
+) => void;
 /**
  * Type signature for an event consumer. Called via {@link Emit}
  */
@@ -53,6 +59,7 @@ export type Emit<TPayloadMap extends EventPayloadMap> = <
 
 export interface ILuister<TPayloadMap extends EventPayloadMap> {
   unsubscribe: Unsubscribe<TPayloadMap>;
+  unsubscribeAll: UnsubscribeAll<TPayloadMap>;
   subscribe: Subscribe<TPayloadMap>;
   emit: Emit<TPayloadMap>;
 }
