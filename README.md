@@ -29,6 +29,8 @@ with `emit`, `subscribe`, and `unsubscribe` methods as properties.
 Use `subscribe` to listen to a particular event. It will be called and receive a payload when the event is emitted. It
 also returns a function that you can invoke to unsubscribe the consumer from the event for easy cleanup.
 
+Internally, the consumers for a given event are stored in a Set. This means that if the same consumer is registered multiple times, it will only be called once when the event is emitted. 
+
 Use `emit` to trigger an event and call any subscribers with a given payload.
 
 Use `unsubscribe` to remove a consumer from a given event.

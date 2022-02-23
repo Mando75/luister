@@ -20,7 +20,7 @@ export type Subscribe<TPayloadMap extends EventPayloadMap> = <
 >(
   event: EventKey | Array<EventKey>,
   consumer: Consumer<TPayloadMap[EventKey]>
-) => () => Array<boolean>;
+) => () => ReturnType<Unsubscribe<TPayloadMap>>;
 /**
  * Unsubscribe a consumer from one or more events.
  *
